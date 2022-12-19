@@ -1,0 +1,7 @@
+[default]
+port = 443
+limits = { form = "64 kB", json = "1 MiB" }
+
+[default.tls]
+certs = "../tls/fullchain.pem"
+key = "../tls/privkey.pem"
