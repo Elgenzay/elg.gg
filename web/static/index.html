@@ -5,30 +5,27 @@
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="./resources/home.css">
 	<title>elg.gg</title>
-	<style>
-		html,
-		body {
-			height: 100%;
-			background-color: #000;
-			color: #fff;
-		}
-
-		#container {
-			display: flex;
-			justify-content: center;
-			width: 100%;
-			height: 100%;
-			align-items: center;
-			font-size: 25px;
-		}
-
-	</style>
+	<script src="./resources/ebackground.js"></script>
+	<script src="./resources/fadein.js"></script>
+	<script>
+		window.onload = () => {
+			new EBackground(document.getElementById("ebackground"));
+			new ElementFadeIn(document.getElementById("title"));
+		};
+	</script>
 </head>
 
 <body>
+	<div>
+		<canvas id="ebackground" width="200" height="200"></canvas>
+	</div>
 	<div id="container">
-		o/
+		<div id="title_anchor">
+			<div id="title" data-fadein="elg.gg">
+			</div>
+		</div>
 	</div>
 </body>
 
