@@ -10,13 +10,13 @@ class EBackground {
 		this.c_appearance_interval_random = 3;
 		this.c_random_brightness_min = 0.50;
 		this.c_random_brightness_max = 0.75;
-		this.c_secondary_amount = 0.025;
+		this.c_secondary_amount = 0.02;
 		this.c_map_center = this.string_to_map(
 			"...00;" +
 			".0...;" +
 			"00.0.;" +
 			".0...;" +
-			"00000;",
+			"00000.......0;",
 			-2, -2
 		);
 		this.c_map_secondary = this.string_to_map(
@@ -25,7 +25,7 @@ class EBackground {
 			"0...000.000.....00.0..0..0.......0.000...000.000..0;" +
 			"000..0...0..000.0....0..0........0.0.0...0.0.0.0.0.;" +
 			"0.0..0...0..0.0..0.0.0..0........0.0.0...0.0.0.0.0.;" +
-			"0.0..00..00.000.00...0..0........0.000.0.000.000.0.;" +
+			"0.0..00..00.000.00...0..0........0.000...000.000.0.;" +
 			"............0........................0.....0...0...;" +
 			"............0......................000...000.000...;",
 			-29, -3
@@ -225,9 +225,9 @@ class EBackground {
 
 	initialize() {
 		this.map_primary = [];
-		this.map_primary_queue = this.c_map_center;
-		this.map_secondary = this.c_map_secondary;
-		this.map_void = this.c_map_void;
+		this.map_primary_queue = structuredClone(this.c_map_center);
+		this.map_secondary = structuredClone(this.c_map_secondary);
+		this.map_void = structuredClone(this.c_map_void);
 		for (let i in this.map_primary_queue) {
 			this.map_primary_queue[i].p = true;
 		}

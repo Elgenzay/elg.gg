@@ -35,7 +35,7 @@ a:hover {
 
 #links_anchor {
 	width: 60%;
-	height: 60%;
+	height: 80%;
 	font-size: 6mm;
 }
 
@@ -69,6 +69,17 @@ a:hover {
 	width: 32px;
 	height: 32px;
 	display: flex;
+}
+
+.text-links-wrapper {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+}
+
+.text-links-wrapper *:hover {
+	background-color: #ffffff10;
 }
 
 #title {
