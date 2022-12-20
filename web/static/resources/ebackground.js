@@ -1,15 +1,16 @@
 class EBackground {
 	constructor(canvas) {
 		this.c_offset = 0.5;
-		this.c_overlap = 1;
 		this.c_interval = 64;
 		this.c_fill_speed = 0.02;
 		this.c_pixel_brightness = 150;
 		this.c_background_color = "#000";
 		this.c_relative_pixel_size = 0.04;
 		this.c_appearance_interval_primary = 2;
-		this.c_appearance_interval_random = 2;
-		this.c_secondary_amount = 0.05;
+		this.c_appearance_interval_random = 3;
+		this.c_random_brightness_min = 0.50;
+		this.c_random_brightness_max = 0.75;
+		this.c_secondary_amount = 0.025;
 
 		this.canvas = canvas;
 		if (!this.canvas) {
@@ -30,7 +31,7 @@ class EBackground {
 		this.ctx.fillStyle = this.c_background_color;
 		this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 		for (let i in map) {
-			this.draw_pixel(map[i].x, map[i].y, map[i].o);
+			this.draw_pixel(map[i]);
 		}
 	}
 
@@ -45,13 +46,24 @@ class EBackground {
 		}
 
 		if (this.frame % this.c_appearance_interval_random == 0) {
-			this.map_random.push({
-				"x": Math.ceil(this.pixels_x * Math.random() - (this.pixels_x / 2)),
-				"y": Math.ceil(this.pixels_y * Math.random() - (this.pixels_y / 2)),
-				"t": (Math.random() * 75) * 0.01,
-				"f": false,
-				"o": 0
-			});
+			let x = Math.ceil(this.pixels_x * Math.random() - (this.pixels_x / 2));
+			let y = Math.ceil(this.pixels_y * Math.random() - (this.pixels_y / 2));
+			let valid = true;
+			for (let i in this.map_void) {
+				if (this.map_void[i].x == x && this.map_void[i].y == y) {
+					valid = false;
+					break;
+				}
+			}
+			if (valid) {
+				this.map_random.push({
+					x,
+					y,
+					"t": this.c_random_brightness_min + (Math.random() * this.rand_t_range),
+					"f": false,
+					"o": 0
+				});
+			}
 		}
 
 		let map = [];
@@ -71,8 +83,6 @@ class EBackground {
 			}
 			map.push(this.map_random[i]);
 		}
-
-		map = map.concat(this.map_void);
 
 		for (let i in this.map_secondary) {
 			if (this.map_secondary[i].w) {
@@ -121,10 +131,6 @@ class EBackground {
 		this.draw_map(map);
 	}
 
-	draw_center() {
-		this.draw_pixel((this.pixels_x / 2), (this.pixels_y / 2));
-	}
-
 	reset() {
 		this.canvas.width = window.innerWidth;
 		this.canvas.height = window.innerHeight;
@@ -132,28 +138,17 @@ class EBackground {
 		this.pixels_x = (window.innerWidth / this.pixelsize);
 		this.pixels_y = window.innerHeight / this.pixelsize;
 		this.animate();
-
-		this.write(1, 1, "resizing");
 	}
 
-	draw_pixel(x, y, o) {
-		let c = Math.floor(this.c_pixel_brightness * o);
+	draw_pixel(pixel) {
+		let c = Math.floor(this.c_pixel_brightness * pixel.o);
+		let overlap = ("p" in pixel) ? 1 : 0;
 		this.ctx.fillStyle = "rgb(" + c + "," + c + "," + c + ")";
 		this.ctx.fillRect(
-			((((this.pixels_x / 2) + x) * this.pixelsize) - (this.c_offset * this.pixelsize)) - this.c_overlap,
-			(((this.pixels_y / 2) + y) * this.pixelsize) - this.c_overlap,
-			this.pixelsize + this.c_overlap,
-			this.pixelsize + this.c_overlap
-		);
-	}
-
-	write(x, y, text) {
-		this.ctx.fillStyle = "white";
-		this.ctx.font = "24px serif";
-		this.ctx.fillText(
-			text,
-			(x * this.pixelsize) - (this.c_offset * this.pixelsize),
-			y * this.pixelsize
+			((((this.pixels_x / 2) + pixel.x) * this.pixelsize) - (this.c_offset * this.pixelsize)) - overlap,
+			(((this.pixels_y / 2) + pixel.y) * this.pixelsize) - overlap,
+			this.pixelsize + overlap,
+			this.pixelsize + overlap
 		);
 	}
 
@@ -213,16 +208,20 @@ class EBackground {
 			"00.0000;" +
 			"0.....0;" +
 			"0000000;" +
-			"0000000;" +
+			".......;" +
 			"0000000;" +
 			"0000000;",
 			-3, -3
 		);
+		for (let i in this.map_primary_queue) {
+			this.map_primary_queue[i].p = true;
+		}
 		for (let i in this.map_secondary) {
 			this.map_secondary[i].f = false;
 			this.map_secondary[i].w = true;
 		}
 		this.map_random = [];
+		this.rand_t_range = this.c_random_brightness_max - this.c_random_brightness_min;
 	}
 
 	keypress(e) {

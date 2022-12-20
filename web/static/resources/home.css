@@ -1,17 +1,18 @@
 html {
 	height: 100%;
+	overflow: hidden;
 }
 
 body {
 	height: 100%;
-	font-family: Roboto;
+	font-family: Electrolize;
 	background-color: #0a0a0a;
 	color: #e6e6e6;
 }
 
 @font-face {
-	font-family: Roboto;
-	src: url("./Roboto-Regular.ttf");
+	font-family: Electrolize;
+	src: url("./fonts/Electrolize/Electrolize-Regular.ttf");
 }
 
 #container {
@@ -38,5 +39,5 @@ body {
 
 #title {
 	font-size: 8mm;
-	letter-spacing: 4px;
+	letter-spacing: 10px;
 }
