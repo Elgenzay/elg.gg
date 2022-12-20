@@ -11,6 +11,38 @@ class EBackground {
 		this.c_random_brightness_min = 0.50;
 		this.c_random_brightness_max = 0.75;
 		this.c_secondary_amount = 0.025;
+		this.c_map_center = this.string_to_map(
+			"...00;" +
+			".0...;" +
+			"00.0.;" +
+			".0...;" +
+			"00000;",
+			-2, -2
+		);
+		this.c_map_secondary = this.string_to_map(
+			"0.....................0..0.......0................0;" +
+			"0....0...0............0..0.......0................0;" +
+			"0...000.000.....00.0..0..0.......0.000...000.000..0;" +
+			"000..0...0..000.0....0..0........0.0.0...0.0.0.0.0.;" +
+			"0.0..0...0..0.0..0.0.0..0........0.0.0...0.0.0.0.0.;" +
+			"0.0..00..00.000.00...0..0........0.000.0.000.000.0.;" +
+			"............0........................0.....0...0...;" +
+			"............0......................000...000.000...;",
+			-29, -3
+		);
+		this.c_map_void = this.string_to_map(
+			"...0000;" +
+			".000..0;" +
+			"00.0000;" +
+			"0..0.00;" +
+			"00.0000;" +
+			"0.....0;" +
+			"0000000;" +
+			".......;" +
+			"0000000;" +
+			"0000000;",
+			-3, -3
+		);
 
 		this.canvas = canvas;
 		if (!this.canvas) {
@@ -61,7 +93,8 @@ class EBackground {
 					y,
 					"t": this.c_random_brightness_min + (Math.random() * this.rand_t_range),
 					"f": false,
-					"o": 0
+					"o": 0,
+					"r": (Math.random() > 0.5) ? true : false
 				});
 			}
 		}
@@ -150,6 +183,17 @@ class EBackground {
 			this.pixelsize + overlap,
 			this.pixelsize + overlap
 		);
+		if (!overlap && pixel.r) {
+			this.ctx.fillStyle = this.c_background_color;
+			this.ctx.fillRect(
+				((((this.pixels_x / 2) + pixel.x) * this.pixelsize) - (this.c_offset * this.pixelsize)) + 4,
+				(((this.pixels_y / 2) + pixel.y) * this.pixelsize) + 4,
+				this.pixelsize - 8,
+				this.pixelsize - 8
+			);
+		} else {
+
+		}
 	}
 
 	string_to_map(str, offset_x, offset_y) {
@@ -181,38 +225,9 @@ class EBackground {
 
 	initialize() {
 		this.map_primary = [];
-		this.map_primary_queue = this.string_to_map(
-			"...00;" +
-			".0...;" +
-			"00.0.;" +
-			".0...;" +
-			"00000;",
-			-2, -2
-		);
-		this.map_secondary = this.string_to_map(
-			"0.....................0..0.......0................0;" +
-			"0....0...0............0..0.......0................0;" +
-			"0...000.000.....00.0..0..0.......0.000...000.000..0;" +
-			"000..0...0..000.0....0..0........0.0.0...0.0.0.0.0.;" +
-			"0.0..0...0..0.0..0.0.0..0........0.0.0...0.0.0.0.0.;" +
-			"0.0..00..00.000.00...0..0........0.000.0.000.000.0.;" +
-			"............0........................0.....0...0...;" +
-			"............0......................000...000.000...;",
-			-29, -3
-		);
-		this.map_void = this.string_to_map(
-			"...0000;" +
-			".000..0;" +
-			"00.0000;" +
-			"0..0.00;" +
-			"00.0000;" +
-			"0.....0;" +
-			"0000000;" +
-			".......;" +
-			"0000000;" +
-			"0000000;",
-			-3, -3
-		);
+		this.map_primary_queue = this.c_map_center;
+		this.map_secondary = this.c_map_secondary;
+		this.map_void = this.c_map_void;
 		for (let i in this.map_primary_queue) {
 			this.map_primary_queue[i].p = true;
 		}
