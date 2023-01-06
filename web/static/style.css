@@ -31,6 +31,7 @@ a:hover {
 }
 
 #links_anchor {
+	display: flex;
 	font-size: 6mm;
 	height: 80%;
 	width: 60%;
@@ -46,6 +47,12 @@ a:hover {
 	padding: 10px;
 	text-align: center;
 	width: 150px;
+}
+
+@media (max-width:500px) {
+	#links_anchor {
+		justify-content: center;
+	}
 }
 
 .socials-wrapper {
