@@ -4,7 +4,6 @@ class EBackground {
 		this.c_interval = 64;
 		this.c_fill_speed = 0.02;
 		this.c_pixel_brightness = 150;
-		this.c_background_color = "#000";
 		this.c_relative_pixel_size = 0.04;
 		this.c_appearance_interval_primary = 2;
 		this.c_appearance_interval_random = 3;
@@ -46,13 +45,12 @@ class EBackground {
 
 		this.canvas = canvas;
 		if (!this.canvas) {
-			console.error("\"ebackground\" canvas id not found");
+			console.error("Canvas not found");
 			return;
 		}
 		this.ctx = this.canvas.getContext("2d");
 		window.ebackground = this;
 		window.document.body.setAttribute("onresize", "window.ebackground.reset();");
-		window.document.body.setAttribute("onkeypress", "window.ebackground.keypress(event);");
 		this.initialize();
 		this.reset();
 		this.frame = 0;
@@ -60,7 +58,7 @@ class EBackground {
 	}
 
 	draw_map(map) {
-		this.ctx.fillStyle = this.c_background_color;
+		this.ctx.fillStyle = "#000";
 		this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 		for (let i in map) {
 			this.draw_pixel(map[i]);
@@ -184,15 +182,13 @@ class EBackground {
 			this.pixelsize + overlap
 		);
 		if (!overlap && pixel.r) {
-			this.ctx.fillStyle = this.c_background_color;
+			this.ctx.fillStyle = "#000";
 			this.ctx.fillRect(
 				((((this.pixels_x / 2) + pixel.x) * this.pixelsize) - (this.c_offset * this.pixelsize)) + 4,
 				(((this.pixels_y / 2) + pixel.y) * this.pixelsize) + 4,
 				this.pixelsize - 8,
 				this.pixelsize - 8
 			);
-		} else {
-
 		}
 	}
 
@@ -237,11 +233,5 @@ class EBackground {
 		}
 		this.map_random = [];
 		this.rand_t_range = this.c_random_brightness_max - this.c_random_brightness_min;
-	}
-
-	keypress(e) {
-		if (e.key == "r") {
-			this.initialize();
-		}
 	}
 }
