@@ -28,6 +28,7 @@ a:hover {
 #title {
 	font-size: 8mm;
 	letter-spacing: 10px;
+	text-align: center;
 }
 
 #links_anchor {

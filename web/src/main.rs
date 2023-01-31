@@ -3,6 +3,7 @@ extern crate rocket;
 
 use std::path::{Path, PathBuf};
 
+use reqwest::StatusCode;
 use rocket::fs::relative;
 use rocket::fs::NamedFile;
 use rocket::response::Redirect;
@@ -20,11 +21,46 @@ pub async fn static_pages(path: PathBuf) -> Option<NamedFile> {
 }
 
 #[catch(404)]
-pub async fn not_found(req: &rocket::Request<'_>) -> Redirect {
-	let path = PathBuf::from(req.uri().path().to_string());
-	let mut new_uri = String::from("https://nginx.elg.gg");
-	new_uri.push_str(&path.into_os_string().into_string().unwrap());
-	Redirect::to(new_uri)
+pub async fn not_found(req: &rocket::Request<'_>) -> Result<NamedFile, Redirect> {
+	let client = reqwest::Client::new();
+	let path = PathBuf::from(req.uri().path().to_string())
+		.into_os_string()
+		.into_string()
+		.unwrap();
+	let mut new_uri = "https://nginx.elg.gg".to_string();
+	new_uri.push_str(&path[..]);
+	match client.get(&new_uri).send().await {
+		Ok(resp) => {
+			if let StatusCode::NOT_FOUND = resp.status() {
+				let mut new_uri = "https://i.elg.gg".to_string();
+				new_uri.push_str(&path[..]);
+				match client.get(&new_uri).send().await {
+					Ok(resp) => {
+						if let StatusCode::NOT_FOUND = resp.status() {
+							Ok(
+								NamedFile::open(Path::new(relative!("static")).join("404.html"))
+									.await
+									.unwrap(),
+							)
+						} else {
+							Err(Redirect::to(new_uri))
+						}
+					}
+					Err(_) => panic!(),
+				}
+			} else {
+				Err(Redirect::to(new_uri))
+			}
+		}
+		Err(_) => panic!(),
+	}
+}
+
+#[catch(500)]
+pub async fn internal_server_error() -> NamedFile {
+	NamedFile::open(Path::new(relative!("static")).join("500.html"))
+		.await
+		.unwrap()
 }
 
 #[rocket::launch]
@@ -32,5 +68,5 @@ fn rocket() -> _ {
 	rocket::build()
 		.mount("/", rocket::routes![static_pages])
 		.attach(Shield::default().enable(Hsts::IncludeSubDomains(Duration::new(31536000, 0))))
-		.register("/", catchers![not_found])
+		.register("/", catchers![not_found, internal_server_error])
 }

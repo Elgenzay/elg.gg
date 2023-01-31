@@ -1,5 +1,5 @@
 class EBackground {
-	constructor(canvas) {
+	constructor(canvas, center_override = null, secondary_override = null, void_override = null) {
 		this.c_offset = 0.5;
 		this.c_interval = 64;
 		this.c_fill_speed = 0.02;
@@ -10,7 +10,7 @@ class EBackground {
 		this.c_random_brightness_min = 0.50;
 		this.c_random_brightness_max = 0.75;
 		this.c_secondary_amount = 0.02;
-		this.c_map_center = this.string_to_map(
+		this.c_map_center = center_override ? center_override : EBackground.string_to_map(
 			"...00;" +
 			".0...;" +
 			"00.0.;" +
@@ -18,7 +18,7 @@ class EBackground {
 			"00000.......0;",
 			-2, -2
 		);
-		this.c_map_secondary = this.string_to_map(
+		this.c_map_secondary = secondary_override ? secondary_override : EBackground.string_to_map(
 			"0.....................0..0.......0................0;" +
 			"0....0...0............0..0.......0................0;" +
 			"0...000.000.....00.0..0..0.......0.000...000.000..0;" +
@@ -29,7 +29,7 @@ class EBackground {
 			"............0......................000...000.000...;",
 			-29, -3
 		);
-		this.c_map_void = this.string_to_map(
+		this.c_map_void = void_override ? void_override : EBackground.string_to_map(
 			"...0000;" +
 			".000..0;" +
 			"00.0000;" +
@@ -176,23 +176,23 @@ class EBackground {
 		let overlap = ("p" in pixel) ? 1 : 0;
 		this.ctx.fillStyle = "rgb(" + c + "," + c + "," + c + ")";
 		this.ctx.fillRect(
-			((((this.pixels_x / 2) + pixel.x) * this.pixelsize) - (this.c_offset * this.pixelsize)) - overlap,
-			(((this.pixels_y / 2) + pixel.y) * this.pixelsize) - overlap,
-			this.pixelsize + overlap,
-			this.pixelsize + overlap
+			((((this.pixels_x / 2) + pixel.x) * this.pixelsize) - (this.c_offset * this.pixelsize)) - 1,
+			(((this.pixels_y / 2) + pixel.y) * this.pixelsize) - 1,
+			this.pixelsize + 1,
+			this.pixelsize + 1
 		);
 		if (!overlap && pixel.r) {
 			this.ctx.fillStyle = "#000";
 			this.ctx.fillRect(
-				((((this.pixels_x / 2) + pixel.x) * this.pixelsize) - (this.c_offset * this.pixelsize)) + 4,
-				(((this.pixels_y / 2) + pixel.y) * this.pixelsize) + 4,
-				this.pixelsize - 8,
-				this.pixelsize - 8
+				((((this.pixels_x / 2) + pixel.x) * this.pixelsize) - (this.c_offset * this.pixelsize)) + 3,
+				(((this.pixels_y / 2) + pixel.y) * this.pixelsize) + 3,
+				this.pixelsize - 7,
+				this.pixelsize - 7
 			);
 		}
 	}
 
-	string_to_map(str, offset_x, offset_y) {
+	static string_to_map(str, offset_x, offset_y) {
 		let x = offset_x;
 		let y = offset_y;
 		let map = [];

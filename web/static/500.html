@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>elg.gg</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="resources/css/electrolize.css">
+	<link rel="stylesheet" href="style.css">
+	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+	<script src="resources/js/ebackground.js"></script>
+	<script src="resources/js/fadein.js"></script>
+	<script>
+		window.onload = () => {
+			let bg = new EBackground(document.getElementById("ebackground"), EBackground.string_to_map(
+				"000.000.000;" +
+				"0...0.0.0.0;" +
+				"...........;" +
+				"..0.0.0.0.0;" +
+				"000.000.000;",
+				-5, -2
+			), EBackground.string_to_map(
+				"000.0.0.0.0;",
+				-5, 0
+			), EBackground.string_to_map(
+				"0000000000000;" +
+				"0000000000000;" +
+				"0000000000000;" +
+				"0000000000000;" +
+				"0000000000000;" +
+				"0000000000000;" +
+				"0000000000000;" +
+				".............;" +
+				"0000000000000;" +
+				"0000000000000;",
+				-6, -3
+			));
+			new ElementFadeIn(document.getElementById("title"));
+		};
+	</script>
+</head>
+
+<body>
+	<canvas id="ebackground"></canvas>
+	<div class="full-screen">
+		<div id="title_anchor">
+			<div id="title" data-fadein="internal server error">
+			</div>
+		</div>
+	</div>
+	<div class="full-screen">
+		<div id="links_anchor">
+			<div id="links_box" style="height: 30px;">
+				<div class="text-links-wrapper">
+					<a href="/">
+						elg.gg
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>
