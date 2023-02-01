@@ -20,6 +20,14 @@ pub async fn static_pages(path: PathBuf) -> Option<NamedFile> {
 	NamedFile::open(path).await.ok()
 }
 
+#[rocket::get("/i/<path..>")]
+pub async fn i_redirect(path: PathBuf) -> Redirect {
+	let path = PathBuf::from(path).into_os_string().into_string().unwrap();
+	let mut new_uri = "https://i.elg.gg/".to_string();
+	new_uri.push_str(&path[..]);
+	Redirect::to(new_uri)
+}
+
 #[catch(404)]
 pub async fn not_found(req: &rocket::Request<'_>) -> Result<NamedFile, Redirect> {
 	let client = reqwest::Client::new();
@@ -66,7 +74,7 @@ pub async fn internal_server_error() -> NamedFile {
 #[rocket::launch]
 fn rocket() -> _ {
 	rocket::build()
-		.mount("/", rocket::routes![static_pages])
+		.mount("/", rocket::routes![static_pages, i_redirect])
 		.attach(Shield::default().enable(Hsts::IncludeSubDomains(Duration::new(31536000, 0))))
 		.register("/", catchers![not_found, internal_server_error])
 }
