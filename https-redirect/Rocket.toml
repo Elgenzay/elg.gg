@@ -1,3 +1,2 @@
 [default]
 port = 80
-limits = { form = "64 kB", json = "1 MiB" }
