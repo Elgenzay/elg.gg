@@ -22,7 +22,7 @@ pub async fn static_pages(path: PathBuf) -> Option<NamedFile> {
 
 #[rocket::get("/i/<path..>")]
 pub async fn i_redirect(path: PathBuf) -> Redirect {
-	let path = PathBuf::from(path).into_os_string().into_string().unwrap();
+	let path = path.into_os_string().into_string().unwrap();
 	let mut new_uri = "https://i.elg.gg/".to_string();
 	new_uri.push_str(&path[..]);
 	Redirect::to(new_uri)
