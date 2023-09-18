@@ -4,3 +4,4 @@ Cargo.lock
 .env
 /tls/fullchain.pem
 /tls/privkey.pem
+/web/static/.well-known/
