@@ -20,6 +20,15 @@ pub async fn static_pages(path: PathBuf) -> Option<NamedFile> {
 	NamedFile::open(path).await.ok()
 }
 
+#[rocket::get("/.well-known/<path..>")]
+pub async fn well_known(path: PathBuf) -> Option<NamedFile> {
+	let mut file_path = Path::new(relative!("static/.well-known")).join(path);
+	if file_path.is_dir() {
+		file_path.push("index.html");
+	}
+	NamedFile::open(file_path).await.ok()
+}
+
 #[rocket::get("/i/<path..>")]
 pub async fn i_redirect(path: PathBuf) -> Redirect {
 	let path = path.into_os_string().into_string().unwrap();
@@ -74,7 +83,7 @@ pub async fn internal_server_error() -> NamedFile {
 #[rocket::launch]
 fn rocket() -> _ {
 	rocket::build()
-		.mount("/", rocket::routes![static_pages, i_redirect])
+		.mount("/", rocket::routes![static_pages, i_redirect, well_known])
 		.attach(Shield::default().enable(Hsts::IncludeSubDomains(Duration::new(31536000, 0))))
 		.register("/", catchers![not_found, internal_server_error])
 }
