@@ -1,15 +1,16 @@
 #[macro_use]
 extern crate rocket;
 
-use std::path::{Path, PathBuf};
-
 use reqwest::StatusCode;
 use rocket::fs::relative;
 use rocket::fs::NamedFile;
 use rocket::response::Redirect;
+use rocket::serde::json::Json;
+use rocket::serde::Serialize;
 use rocket::shield::Hsts;
 use rocket::shield::Shield;
 use rocket::time::Duration;
+use std::path::{Path, PathBuf};
 
 #[rocket::get("/<path..>")]
 pub async fn static_pages(path: PathBuf) -> Option<NamedFile> {
@@ -83,7 +84,22 @@ pub async fn internal_server_error() -> NamedFile {
 #[rocket::launch]
 fn rocket() -> _ {
 	rocket::build()
-		.mount("/", rocket::routes![static_pages, i_redirect, well_known])
+		.mount(
+			"/",
+			rocket::routes![static_pages, i_redirect, well_known, version],
+		)
 		.attach(Shield::default().enable(Hsts::IncludeSubDomains(Duration::new(31536000, 0))))
 		.register("/", catchers![not_found, internal_server_error])
+}
+
+#[derive(Serialize)]
+pub struct VersionInfo {
+	version: String,
+}
+
+#[rocket::get("/version")]
+pub fn version() -> Json<VersionInfo> {
+	Json(VersionInfo {
+		version: env!("CARGO_PKG_VERSION").to_string(),
+	})
 }
