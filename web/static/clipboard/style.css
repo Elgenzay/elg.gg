@@ -1,0 +1,20 @@
+button {
+    background-color: #000;
+    color: #fff;
+    height: 50px;
+    width: 100px;
+}
+
+#output {
+    background-color: #000;
+    color: #fff;
+}
+
+.full-screen {
+    flex-direction: column;
+}
+
+.full-screen > div {
+    margin-top: 100px;
+}
+

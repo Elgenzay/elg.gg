@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>Clipboard</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="/resources/css/electrolize.css">
+	<link rel="stylesheet" href="/style.css">
+	<link rel="stylesheet" href="/clipboard/style.css">
+	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+	<script src="/clipboard/clipboard.js"></script>
+</head>
+
+<body>
+	<div class="full-screen">
+		<h1>
+			Clipboard
+		</h1>
+		<div>
+			<textarea id="input" name="input" rows="4" cols="50"></textarea>
+		</div>
+		<div>
+			<textarea id="output" name="output" rows="4" cols="50" readonly></textarea>
+		</div>
+		<div>
+			<button onclick="submit(document.getElementById('input').value)">Submit</button>
+		</div>
+	</div>
+</body>
+
+</html>

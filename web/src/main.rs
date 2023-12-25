@@ -1,6 +1,8 @@
 #[macro_use]
 extern crate rocket;
 
+mod clipboard;
+
 use reqwest::StatusCode;
 use rocket::fs::relative;
 use rocket::fs::NamedFile;
@@ -11,6 +13,7 @@ use rocket::shield::Hsts;
 use rocket::shield::Shield;
 use rocket::time::Duration;
 use std::path::{Path, PathBuf};
+use std::sync::Mutex;
 
 #[rocket::get("/<path..>")]
 pub async fn static_pages(path: PathBuf) -> Option<NamedFile> {
@@ -84,9 +87,17 @@ pub async fn internal_server_error() -> NamedFile {
 #[rocket::launch]
 fn rocket() -> _ {
 	rocket::build()
+		.manage(Mutex::new(String::new()))
 		.mount(
 			"/",
-			rocket::routes![static_pages, i_redirect, well_known, version],
+			rocket::routes![
+				static_pages,
+				i_redirect,
+				well_known,
+				version,
+				clipboard::endpoint,
+				clipboard::alias
+			],
 		)
 		.attach(Shield::default().enable(Hsts::IncludeSubDomains(Duration::new(31536000, 0))))
 		.register("/", catchers![not_found, internal_server_error])
