@@ -5,6 +5,11 @@ button {
     width: 100px;
 }
 
+svg {
+    cursor: pointer;
+    margin-top: 10px;
+}
+
 #output {
     background-color: #000;
     color: #fff;
@@ -17,4 +22,3 @@ button {
 .full-screen > div {
     margin-top: 100px;
 }
-

@@ -12,6 +12,7 @@ use rocket::serde::Serialize;
 use rocket::shield::Hsts;
 use rocket::shield::Shield;
 use rocket::time::Duration;
+use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use std::sync::Mutex;
 
@@ -87,7 +88,7 @@ pub async fn internal_server_error() -> NamedFile {
 #[rocket::launch]
 fn rocket() -> _ {
 	rocket::build()
-		.manage(Mutex::new(String::new()))
+		.manage(Mutex::new(HashMap::<u32, clipboard::ClipboardEntry>::new()))
 		.mount(
 			"/",
 			rocket::routes![
@@ -96,7 +97,8 @@ fn rocket() -> _ {
 				well_known,
 				version,
 				clipboard::endpoint,
-				clipboard::alias
+				clipboard::alias,
+				clipboard::pin_url
 			],
 		)
 		.attach(Shield::default().enable(Hsts::IncludeSubDomains(Duration::new(31536000, 0))))

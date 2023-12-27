@@ -28,3 +28,13 @@ function submit(data) {
             console.error('Error:', error);
         });
 }
+
+function togglehideoutput() {
+    let elem = document.getElementById("output");
+
+    if (elem.style.visibility === "hidden") {
+        elem.style.visibility = null;
+    } else {
+        elem.style.visibility = "hidden";
+    }
+}
