@@ -28,7 +28,6 @@ function submit(data) {
                 let jsonObject = JSON.parse(data);
                 if (jsonObject.hasOwnProperty('image')) {
                     propValue = jsonObject.image;
-                    console.log("image: " + propValue);
                     displayImage(propValue);
                 } else {
                     throw new Error();
