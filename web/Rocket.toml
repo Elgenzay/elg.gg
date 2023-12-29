@@ -4,3 +4,6 @@ port = 443
 [default.tls]
 certs = "../tls/fullchain.pem"
 key = "../tls/privkey.pem"
+
+[global.limits]
+string = "1MB"

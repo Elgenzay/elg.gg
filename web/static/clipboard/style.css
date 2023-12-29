@@ -10,6 +10,10 @@ svg {
     margin-top: 10px;
 }
 
+textarea, button {
+    margin-top: 100px;
+}
+
 #output {
     background-color: #000;
     color: #fff;
@@ -19,6 +23,3 @@ svg {
     flex-direction: column;
 }
 
-.full-screen > div {
-    margin-top: 100px;
-}

@@ -7,7 +7,8 @@ use std::sync::Mutex;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 const PIN_LENGTH: usize = 6;
-const EXPIRATION_TIME: u64 = 60 * 10;
+const EXPIRATION_TIME: u64 = 60 * 60 * 24;
+const MAX_ENTRIES: usize = 500;
 
 pub type Clipboard = Mutex<HashMap<u32, ClipboardEntry>>;
 
@@ -26,6 +27,15 @@ pub fn endpoint(input: &str, state: &State<Clipboard>) -> String {
 		.as_secs();
 
 	state.retain(|_, v| v.timestamp + EXPIRATION_TIME > now);
+
+	if state.len() > MAX_ENTRIES {
+		let mut sorted_keys: Vec<_> = state.keys().cloned().collect();
+		sorted_keys.sort_by_key(|k| state[k].timestamp);
+
+		if let Some(oldest_key) = sorted_keys.first() {
+			state.remove(oldest_key);
+		}
+	}
 
 	if input.is_empty() {
 		return String::new();
@@ -68,6 +78,7 @@ pub fn alias() -> Redirect {
 }
 
 #[get("/c/<pin>")]
-pub fn pin_url(pin: &str, state: &State<Clipboard>) -> String {
-	endpoint(pin, state)
+pub fn pin_url(pin: &str) -> Redirect {
+	let redirect_url = format!("/clipboard?p={}", pin);
+	Redirect::to(redirect_url)
 }
