@@ -10,8 +10,15 @@ svg {
     margin-top: 10px;
 }
 
-textarea, button {
+textarea,
+button {
     margin-top: 100px;
+
+}
+
+textarea {
+    width: 90%;
+    max-width: 600px;
 }
 
 #output {
@@ -22,4 +29,3 @@ textarea, button {
 .full-screen {
     flex-direction: column;
 }
-
