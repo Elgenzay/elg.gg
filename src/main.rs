@@ -19,18 +19,22 @@ use std::sync::Mutex;
 #[rocket::get("/<path..>")]
 pub async fn static_pages(path: PathBuf) -> Option<NamedFile> {
 	let mut path = Path::new(relative!("static")).join(path);
+
 	if path.is_dir() {
 		path.push("index.html");
 	}
+
 	NamedFile::open(path).await.ok()
 }
 
 #[rocket::get("/.well-known/<path..>")]
 pub async fn well_known(path: PathBuf) -> Option<NamedFile> {
 	let mut file_path = Path::new(relative!("static/.well-known")).join(path);
+
 	if file_path.is_dir() {
 		file_path.push("index.html");
 	}
+
 	NamedFile::open(file_path).await.ok()
 }
 
@@ -45,17 +49,21 @@ pub async fn i_redirect(path: PathBuf) -> Redirect {
 #[catch(404)]
 pub async fn not_found(req: &rocket::Request<'_>) -> Result<NamedFile, Redirect> {
 	let client = reqwest::Client::new();
+
 	let path = PathBuf::from(req.uri().path().to_string())
 		.into_os_string()
 		.into_string()
 		.unwrap();
+
 	let mut new_uri = "https://nginx.elg.gg".to_string();
 	new_uri.push_str(&path[..]);
+
 	match client.get(&new_uri).send().await {
 		Ok(resp) => {
 			if let StatusCode::NOT_FOUND = resp.status() {
 				let mut new_uri = "https://i.elg.gg".to_string();
 				new_uri.push_str(&path[..]);
+
 				match client.get(&new_uri).send().await {
 					Ok(resp) => {
 						if let StatusCode::NOT_FOUND = resp.status() {

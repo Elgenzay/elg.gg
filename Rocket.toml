@@ -1,0 +1,9 @@
+[default]
+port = 0
+
+[production]
+address = "0.0.0.0"
+port = 80
+
+[global.limits]
+string = "1MB"

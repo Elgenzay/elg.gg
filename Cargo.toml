@@ -1,7 +1,10 @@
-[workspace]
-resolver = "2"
+[package]
+name = "elg_gg"
+version = "1.5.0"
+edition = "2021"
 
-members = [
-    "https-redirect",
-    "web",
-]
+[dependencies]
+rocket = { version = "0.5.0", features = ["json"] }
+reqwest = { version = "0.11.23", features = ["rustls-tls"] }
+serde = "1.0.195"
+rand = "0.8.5"
