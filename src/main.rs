@@ -16,7 +16,7 @@ use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use std::sync::Mutex;
 
-#[rocket::get("/<path..>")]
+#[get("/<path..>")]
 pub async fn static_pages(path: PathBuf) -> Option<NamedFile> {
 	let mut path = Path::new(relative!("static")).join(path);
 
@@ -27,7 +27,7 @@ pub async fn static_pages(path: PathBuf) -> Option<NamedFile> {
 	NamedFile::open(path).await.ok()
 }
 
-#[rocket::get("/.well-known/<path..>")]
+#[get("/.well-known/<path..>")]
 pub async fn well_known(path: PathBuf) -> Option<NamedFile> {
 	let mut file_path = Path::new(relative!("static/.well-known")).join(path);
 
@@ -38,7 +38,7 @@ pub async fn well_known(path: PathBuf) -> Option<NamedFile> {
 	NamedFile::open(file_path).await.ok()
 }
 
-#[rocket::get("/i/<path..>")]
+#[get("/i/<path..>")]
 pub async fn i_redirect(path: PathBuf) -> Redirect {
 	let path = path.into_os_string().into_string().unwrap();
 	let mut new_uri = "https://i.elg.gg/".to_string();
@@ -93,13 +93,13 @@ pub async fn internal_server_error() -> NamedFile {
 		.unwrap()
 }
 
-#[rocket::launch]
+#[launch]
 fn rocket() -> _ {
 	rocket::build()
 		.manage(Mutex::new(HashMap::<u32, clipboard::ClipboardEntry>::new()))
 		.mount(
 			"/",
-			rocket::routes![
+			routes![
 				static_pages,
 				i_redirect,
 				well_known,
@@ -118,7 +118,7 @@ pub struct VersionInfo {
 	version: String,
 }
 
-#[rocket::get("/version")]
+#[get("/version")]
 pub fn version() -> Json<VersionInfo> {
 	Json(VersionInfo {
 		version: env!("CARGO_PKG_VERSION").to_string(),
