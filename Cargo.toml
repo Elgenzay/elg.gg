@@ -1,7 +1,10 @@
 [package]
 name = "elg_gg"
 version = "1.6.0"
+authors = ["Jason <jason@elg.gg>"]
 edition = "2021"
+repository = "https://github.com/Elgenzay/elg.gg"
+license = "MIT-0"
 
 [dependencies]
 rocket = { version = "0.5.1", features = ["json"] }

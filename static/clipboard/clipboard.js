@@ -2,7 +2,7 @@ function copy(elem) {
     elem.select();
 
     if (navigator.clipboard) {
-        navigator.clipboard.writeText(elem.value)
+        navigator.clipboard.writeText(elem.value);
     } else {
         document.execCommand("copy");
     }
@@ -26,6 +26,7 @@ function submit(data) {
         .then(data => {
             try {
                 let jsonObject = JSON.parse(data);
+
                 if (jsonObject.hasOwnProperty('image')) {
                     propValue = jsonObject.image;
                     displayImage(propValue);
@@ -54,7 +55,7 @@ function toggleHideOutput() {
 }
 
 
-document.addEventListener('DOMContentLoaded', (event) => {
+document.addEventListener('DOMContentLoaded', (e) => {
     let pin = getQueryParam('p');
 
     if (pin) {
@@ -65,8 +66,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
         document.getElementById("output").value = "Click Submit to fetch entry " + pin + ".\n\nEntry is deleted when fetched or expired.\n\nText is copied to the clipboard automatically upon retrieval.";
     }
 
-    document.getElementById('input').addEventListener('paste', (event) => {
-        let items = (event.clipboardData || event.originalEvent.clipboardData).items;
+    document.getElementById('input').addEventListener('paste', (e) => {
+        let items = (e.clipboardData || e.originalEvent.clipboardData).items;
         for (let item of items) {
             if (item.kind === 'file') {
                 let file = item.getAsFile();
@@ -89,12 +90,14 @@ document.addEventListener('DOMContentLoaded', (event) => {
 function fileToBase64(file, callback) {
     let reader = new FileReader();
     reader.readAsDataURL(file);
+
     reader.onload = function () {
         let base64String = reader.result
             .replace('data:', '')
             .replace(/^.+,/, '');
         callback(base64String);
     };
+
     reader.onerror = function (error) {
         console.error('Error: ', error);
     };
