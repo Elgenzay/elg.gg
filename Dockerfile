@@ -1,16 +1,12 @@
-FROM rust:1.75-alpine
+FROM rust:latest
 WORKDIR /usr/src/elg_gg
 ENV ROCKET_PROFILE=production
-
-RUN apk add --no-cache \
-    build-base \
-    libressl-dev
+RUN apt-get update && apt-get install -y build-essential
 
 COPY Cargo.toml Rocket.toml Cargo.lock ./
 COPY src ./src
 COPY static ./static
 
 RUN cargo install --path .
-
 EXPOSE 80
 CMD ["elg_gg"]
