@@ -13,72 +13,72 @@ const MAX_ENTRIES: usize = 500;
 pub type Clipboard = Mutex<HashMap<u32, ClipboardEntry>>;
 
 pub struct ClipboardEntry {
-	timestamp: u64,
-	data: String,
+    timestamp: u64,
+    data: String,
 }
 
 #[rocket::post("/clipboard", data = "<input>")]
 pub fn endpoint(input: &str, state: &State<Clipboard>) -> String {
-	let mut state = state.lock().expect("lock failed");
+    let mut state = state.lock().expect("lock failed");
 
-	let now = SystemTime::now()
-		.duration_since(UNIX_EPOCH)
-		.unwrap()
-		.as_secs();
+    let now = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap()
+        .as_secs();
 
-	state.retain(|_, v| v.timestamp + EXPIRATION_TIME > now);
+    state.retain(|_, v| v.timestamp + EXPIRATION_TIME > now);
 
-	if state.len() > MAX_ENTRIES {
-		let mut sorted_keys: Vec<_> = state.keys().cloned().collect();
-		sorted_keys.sort_by_key(|k| state[k].timestamp);
+    if state.len() > MAX_ENTRIES {
+        let mut sorted_keys: Vec<_> = state.keys().cloned().collect();
+        sorted_keys.sort_by_key(|k| state[k].timestamp);
 
-		if let Some(oldest_key) = sorted_keys.first() {
-			state.remove(oldest_key);
-		}
-	}
+        if let Some(oldest_key) = sorted_keys.first() {
+            state.remove(oldest_key);
+        }
+    }
 
-	if input.is_empty() {
-		return String::new();
-	}
+    if input.is_empty() {
+        return String::new();
+    }
 
-	if let Some(input_pin) = pin_from_str(input) {
-		if let Some(entry) = state.remove(&input_pin) {
-			return entry.data;
-		} else {
-			return "Invalid/expired".to_string();
-		}
-	}
+    if let Some(input_pin) = pin_from_str(input) {
+        if let Some(entry) = state.remove(&input_pin) {
+            return entry.data;
+        } else {
+            return "Invalid/expired".to_string();
+        }
+    }
 
-	let new_pin = rand::thread_rng().gen_range(0..10u32.pow(PIN_LENGTH as u32));
+    let new_pin = rand::rng().random_range(0..10u32.pow(PIN_LENGTH as u32));
 
-	state.insert(
-		new_pin,
-		ClipboardEntry {
-			timestamp: now,
-			data: input.to_owned(),
-		},
-	);
+    state.insert(
+        new_pin,
+        ClipboardEntry {
+            timestamp: now,
+            data: input.to_owned(),
+        },
+    );
 
-	format!("{:0>1$}", new_pin, PIN_LENGTH)
+    format!("{:0>1$}", new_pin, PIN_LENGTH)
 }
 
 fn pin_from_str(s: &str) -> Option<u32> {
-	if s.len() == PIN_LENGTH && s.chars().all(|c| c.is_ascii_digit()) {
-		if let Ok(n) = s.parse::<u32>() {
-			return Some(n);
-		}
-	}
+    if s.len() == PIN_LENGTH && s.chars().all(|c| c.is_ascii_digit()) {
+        if let Ok(n) = s.parse::<u32>() {
+            return Some(n);
+        }
+    }
 
-	None
+    None
 }
 
 #[get("/c")]
 pub fn alias() -> Redirect {
-	Redirect::to(uri!(crate::static_pages("/clipboard")))
+    Redirect::to(uri!(crate::static_pages("/clipboard")))
 }
 
 #[get("/c/<pin>")]
 pub fn pin_url(pin: &str) -> Redirect {
-	let redirect_url = format!("/clipboard?p={}", pin);
-	Redirect::to(redirect_url)
+    let redirect_url = format!("/clipboard?p={}", pin);
+    Redirect::to(redirect_url)
 }

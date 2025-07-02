@@ -1,6 +1,6 @@
 [package]
 name = "elg_gg"
-version = "1.6.0"
+version = "1.7.0"
 authors = ["Jason <jason@elg.gg>"]
 edition = "2021"
 repository = "https://github.com/Elgenzay/elg.gg"
@@ -8,6 +8,6 @@ license = "MIT-0"
 
 [dependencies]
 rocket = { version = "0.5.1", features = ["json"] }
-reqwest = { version = "0.12.5", features = ["rustls-tls"] }
-serde = "1.0.203"
-rand = "0.8.5"
+reqwest = { version = "0.12.22", features = ["rustls-tls"] }
+serde = "1.0.219"
+rand = "0.9.1"
