@@ -59,7 +59,7 @@ pub fn endpoint(input: &str, state: &State<Clipboard>) -> String {
         },
     );
 
-    format!("{:0>1$}", new_pin, PIN_LENGTH)
+    format!("{new_pin:0>PIN_LENGTH$}")
 }
 
 fn pin_from_str(s: &str) -> Option<u32> {
@@ -79,6 +79,6 @@ pub fn alias() -> Redirect {
 
 #[get("/c/<pin>")]
 pub fn pin_url(pin: &str) -> Redirect {
-    let redirect_url = format!("/clipboard?p={}", pin);
+    let redirect_url = format!("/clipboard?p={pin}");
     Redirect::to(redirect_url)
 }
